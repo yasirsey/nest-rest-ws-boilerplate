@@ -5,7 +5,7 @@
 
 ## Description
 
-REST & WebService Boilerplate with Authentication and Authorization. Uses MongoDB provider for database.
+REST & WebSocket Boilerplate with Authentication and Authorization. Uses MongoDB provider for database.
 With [Nest](https://github.com/nestjs/nest) framework.
 
 ## Installation
