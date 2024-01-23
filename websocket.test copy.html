@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test</title>
+  <script src="https://cdn.socket.io/4.7.3/socket.io.min.js"
+    integrity="sha384-+miq58Ltmjm+SSP5g8Ok6dpMO/6R4n8xe/x1Yj0Bdb9kiEz25LTnWv/GZQTRQamg"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <h1>WebSocket Test</h1>
+  <input type="text" id="usernameInput" placeholder="Enter your username">
+  <input type="text" id="receiver" placeholder="ReceiverId">
+  <button onclick="joinChat()">Join Chat</button>
+  <button onclick="leaveChat()">Leave Chat</button>
+  <br>
+  <select id="recipientSelect"></select>
+  <br>
+  <textarea id="chatOutput" rows="10" cols="50" readonly></textarea>
+  <br>
+  <input type="text" id="messageInput" placeholder="Type your message">
+  <button onclick="sendMessage()">Send Message</button>
+
+  <script>
+    const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWE2ZmYwMDUzMTZlZDBlODc5MzU1ZDEiLCJpYXQiOjE3MDU0NDUxMjYsImV4cCI6MTcwNjA0OTkyNn0.65p-FWchtGKGOET9xMHVQEWtvcvLjbVCIv_qkadnos8";
+    const socket = io('http://localhost:5000', {
+      auth: {
+        token
+      }
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      // socket.emit('getUsers', {}, (users) => {
+      //   const recipientSelect = document.getElementById('recipientSelect');
+      //   users.forEach(user => {
+      //     const option = document.createElement('option');
+      //     option.value = user.id;
+      //     option.text = user.username;
+      //     recipientSelect.add(option);
+      //   });
+      // });
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+
+    socket.on('error', (error) => {
+      console.log(error);
+    })
+
+    socket.on('message', (message) => {
+      console.log(message);
+      const chatOutput = document.getElementById('chatOutput');
+      chatOutput.value += message + '\n';
+    });
+    
+    socket.on('newMessage', (message) => {
+      console.log(message);
+      const chatOutput = document.getElementById('chatOutput');
+      chatOutput.value += message + '\n';
+    });
+
+    function joinChat() {
+      const usernameInput = document.getElementById('usernameInput');
+      const username = usernameInput.value;
+      socket.emit('joinRoom', username, (users) => {
+        const recipientSelect = document.getElementById('recipientSelect');
+        users.forEach(user => {
+          const option = document.createElement('option');
+          option.value = user.id;
+          option.text = user.username;
+          recipientSelect.add(option);
+        });
+      });
+    }
+
+    function leaveChat() {
+      socket.emit('leaveRoom');
+    }
+
+    function sendMessage() {
+      const recipientSelect = document.getElementById('receiver');
+      const recipientId = recipientSelect.value;
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value;
+      socket.emit('sendMessage', { receiver: recipientId, content: message });
+    }
+  </script>
+</body>
+
+</html>

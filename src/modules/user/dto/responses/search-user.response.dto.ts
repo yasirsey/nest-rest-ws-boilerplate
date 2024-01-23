@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt } from 'class-validator';
-import { UserDto } from '../user.dto';
+import { UserDto } from '../../../../schemas/dto/user.dto';
 import { UserDocument } from 'src/schemas/user.schema';
 
 export class SearchUserResponseDto {

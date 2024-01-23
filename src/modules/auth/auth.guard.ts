@@ -29,8 +29,7 @@ export class AuthGuard implements CanActivate {
     const payload = await this.jwtService.verifyAsync(
       token
     );
-    
-    // used try catch because if the user is not found, verifyAsync will throw an error
+
     try {
       const user = await this.userService.getById(payload.sub);
 

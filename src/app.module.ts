@@ -8,22 +8,26 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { WebsocketsModule } from './websockets/websockets.module';
+import { S3ConfigService } from './config/s3.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
-    DatabaseModule,
-    UserModule,
-    AuthModule,
     ThrottlerModule.forRoot([{
       ttl: 6000,
       limit: 100,
-    }])
+    }]),
+    DatabaseModule,
+    UserModule,
+    AuthModule,
+    WebsocketsModule,
   ],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_GUARD,
     useClass: ThrottlerGuard
-  }],
+  }, S3ConfigService],
+  exports: [S3ConfigService],
 })
 export class AppModule { }

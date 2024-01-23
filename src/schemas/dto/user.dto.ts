@@ -17,6 +17,14 @@ export class UserDto {
     @IsEmail()
     email: string;
 
+    @ApiProperty({ example: 'bio desc' })
+    @IsString()
+    bio: string;
+
+    @ApiProperty({ example: 'https://s3.eu-central-1.amazonaws.com/...' })
+    @IsString()
+    profilePhoto: string;
+
     @ApiProperty({ example: 'male' })
     @IsEnum(Gender)
     gender: string;
@@ -30,7 +38,9 @@ export class UserDto {
         this.id = user._id.toString();
         this.fullName = user.fullName;
         this.email = user.email;
+        this.bio = user.bio;
         this.gender = user.gender;
         this.roles = user.roles;
+        this.profilePhoto = user.profilePhoto;
     }
 }

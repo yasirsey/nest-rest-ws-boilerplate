@@ -10,7 +10,10 @@ async function bootstrap() {
 
   // security
   app.use(helmet());
-  app.enableCors();
+  app.enableCors({
+    origin: configService.get('CORS_ORIGIN'),
+    credentials: true,
+  });
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Nest REST API Boilerplate')
