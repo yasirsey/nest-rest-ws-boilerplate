@@ -18,7 +18,6 @@ export class ConnectionGateway {
     @UseGuards(WsJwtGuard)
     async handleConnection(client: Socket) {
         if(!client.handshake.auth.user) return;
-        console.log(client.handshake.auth.user.id)
         await this.userService.setUserOnlineStatus(client.handshake.auth.user.id, true);
     }
 
@@ -26,7 +25,6 @@ export class ConnectionGateway {
     @UseGuards(WsJwtGuard)
     async handleDisconnect(client: Socket) {
         if(!client.handshake.auth.user) return;
-        console.log(client.handshake.auth.user.id)
         await this.userService.setUserOnlineStatus(client.handshake.auth.user.id, false);
     }
 }
