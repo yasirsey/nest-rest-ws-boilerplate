@@ -7,13 +7,15 @@ import { Server, Socket } from 'socket.io';
     }
 })
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
+    constructor() { }
+
     @WebSocketServer() server: Server;
 
-    handleConnection(client: Socket) {
+    async handleConnection(client: Socket) {
         console.log(`Client connected: ${client.id}`);
     }
 
-    handleDisconnect(client: Socket) {
+    async handleDisconnect(client: Socket) {
         console.log(`Client disconnected: ${client.id}`);
     }
 

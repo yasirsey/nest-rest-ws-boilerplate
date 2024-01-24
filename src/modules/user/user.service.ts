@@ -170,4 +170,17 @@ export class UserService {
 
         return user.comparePassword(password);
     }
+
+    async setUserOnlineStatus(userId: string, isOnline: boolean): Promise<void> {
+        const user = await this.userModel.findById(userId).exec();
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        user.isOnline = isOnline;
+        user.lastOnline = new Date();
+
+        await user.save();
+    }
 }

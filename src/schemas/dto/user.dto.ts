@@ -34,6 +34,12 @@ export class UserDto {
     @IsEnum(Role, { each: true })
     roles: string[];
 
+    @ApiProperty({ example: true })
+    isOnline: boolean;
+
+    @ApiProperty({ example: '2020-10-30T12:00:00.000Z' })
+    lastOnline: Date;
+
     constructor(user: UserDocument) {
         this.id = user._id.toString();
         this.fullName = user.fullName;
@@ -42,5 +48,7 @@ export class UserDto {
         this.gender = user.gender;
         this.roles = user.roles;
         this.profilePhoto = user.profilePhoto;
+        this.isOnline = user.isOnline;
+        this.lastOnline = user.lastOnline;
     }
 }

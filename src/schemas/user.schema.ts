@@ -32,6 +32,12 @@ export class User {
     @Prop()
     profilePhoto: string;
 
+    @Prop({ default: false })
+    isOnline: boolean;
+
+    @Prop()
+    lastOnline: Date;
+
     comparePassword(password: string): Promise<boolean> {
         return bcrypt.compare(password, this.password);
     }

@@ -77,9 +77,12 @@
           recipientSelect.add(option);
         });
       });
+
+      socket.emit('connected')
     }
 
     function leaveChat() {
+      socket.emit('connected')
       socket.emit('leaveRoom');
     }
 
