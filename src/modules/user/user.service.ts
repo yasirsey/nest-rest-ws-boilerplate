@@ -66,6 +66,20 @@ export class UserService {
         return new SearchUserResponseDto(total, page, pageSize, users)
     }
 
+    async searchOnlineUsers(): Promise<UserDto[]> {
+        let users = await this.userModel.find({ isOnline: true }).lean().exec();
+
+        users = await Promise.all(users.map(async (user) => {
+            const keyName = `profile-photos/${user._id}.png`;
+
+            user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
+
+            return user;
+        }));
+
+        return users.map(user => new UserDto(user));
+    }
+
     async getById(userId: string): Promise<UserDto> {
         if (!isValidObjectId(userId)) {
             throw new NotFoundException('User not found');

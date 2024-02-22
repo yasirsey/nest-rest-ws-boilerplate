@@ -75,6 +75,15 @@ export class UserController {
         return await this.userService.search(searchUserDto);
     }
 
+    @Get('online')
+    @ApiBearerAuth('access-token')
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({ status: 200, description: 'Users successfully found', type: [UserDto] })
+    @ApiResponse({ status: 400, description: 'Bad Request' })
+    async getOnlineUsers(): Promise<UserDto[]> {
+        return await this.userService.searchOnlineUsers();
+    }
+
     @Get(':id')
     @ApiBearerAuth('access-token')
     @HttpCode(HttpStatus.OK)
