@@ -28,8 +28,13 @@ export class RoomGateway {
 
     @SubscribeMessage('leaveRoom')
     @UseGuards(WsJwtGuard)
-    async handleLeaveRoom(client: Socket, { sender, receiver }: { sender: string; receiver: string }) {
-        await this.roomService.leaveUserFromRoom(sender, receiver);
-        client.leave(`${sender}_${receiver}`);
+    async handleLeaveRoom(client: Socket, receiverId: string) {
+        const senderId = client.handshake.auth.user.id;
+
+        const room = await this.roomService.leaveUserFromRoom(senderId, receiverId);
+
+        if (room) {
+            client.leave(room.name);
+        }
     }
 }

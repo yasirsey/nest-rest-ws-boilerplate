@@ -80,8 +80,12 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     @ApiResponse({ status: 200, description: 'Users successfully found', type: [UserDto] })
     @ApiResponse({ status: 400, description: 'Bad Request' })
-    async getOnlineUsers(): Promise<UserDto[]> {
-        return await this.userService.searchOnlineUsers();
+    async getOnlineUsers(
+        @Request() req
+    ): Promise<UserDto[]> {
+        const userId = req.user.id;
+
+        return await this.userService.searchOnlineUsers(userId);
     }
 
     @Get(':id')

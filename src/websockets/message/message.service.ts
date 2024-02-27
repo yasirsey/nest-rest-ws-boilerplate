@@ -17,6 +17,7 @@ export class MessageService {
 
     async addMessage(sender: UserDto, receiverId: string, content: string): Promise<any> {
         const receiver = await this.userService.getById(receiverId);
+
         if (!sender || !receiver) {
             throw new Error('User not found');
         }
@@ -36,6 +37,15 @@ export class MessageService {
             room: room.id
         });
 
-        return {message, room};
+        return {
+            message: {
+                id: message._id,
+                fullName: sender.fullName,
+                timestamp: new Date().toISOString(),
+                content: message.content,
+                profilePhoto: sender.profilePhoto,
+                isRead: message.isRead
+            }, room
+        };
     }
 }

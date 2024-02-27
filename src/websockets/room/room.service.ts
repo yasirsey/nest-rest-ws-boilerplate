@@ -5,7 +5,6 @@ import { Room } from 'src/schemas/room.schema';
 import { User } from 'src/schemas/user.schema';
 import { WsException } from '@nestjs/websockets';
 import { generateRoomName } from '../helpers/generateRoomId';
-import { Message } from 'src/schemas/message.schema';
 import { UserDto } from 'src/schemas/dto/user.dto';
 import { UserService } from 'src/modules/user/user.service';
 
@@ -37,9 +36,9 @@ export class RoomService {
         return updatedRoom;
     }
 
-    async leaveUserFromRoom(senderUsername: string, receiverUsername: string): Promise<void> {
-        const sender = (await this.userModel.findOne({ username: senderUsername }).exec()).toModel();
-        const receiver = (await this.userModel.findOne({ username: receiverUsername }).exec()).toModel();
+    async leaveUserFromRoom(senderId: string, receiverId: string): Promise<Room> {
+        const sender = (await this.userModel.findOne({ _id: senderId }).exec()).toModel();
+        const receiver = (await this.userModel.findOne({ _id: receiverId }).exec()).toModel();
 
         if (!sender || !receiver) {
             return;
@@ -54,5 +53,7 @@ export class RoomService {
 
         room.members = room.members.filter((userId: string) => ![sender.id, receiver.id].includes(userId));
         await room.save();
+
+        return room;
     }
 }

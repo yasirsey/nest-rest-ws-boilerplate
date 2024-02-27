@@ -16,12 +16,18 @@ export class MessageGateway {
 
     @SubscribeMessage('sendMessage')
     @UseGuards(WsJwtGuard)
-    async handleSendMessage(client: Socket, { receiver, content }: { receiver: string; content: string }) {
+    async handleSendMessage(client: Socket, { receiverId, content }: { receiverId: string; content: string }) {
         const sender = client.handshake.auth.user;
-        const {room, message} = await this.messageService.addMessage(sender, receiver, content);
+        const { room, message } = await this.messageService.addMessage(sender, receiverId, content);
 
         if (message) {
-            this.server.to(room.name).emit('newMessage', message);
+            this.server.to(room.name).emit('newMessage', {
+                from: sender.id,
+                to: receiverId,
+                content: message.content,
+            });
+
+            this.server.to(`messages-${receiverId}`).emit('messages', message);
         }
 
         return message;

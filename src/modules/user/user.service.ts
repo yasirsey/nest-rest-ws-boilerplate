@@ -55,27 +55,30 @@ export class UserService {
             .exec();
 
 
-        users = await Promise.all(users.map(async (user) => {
-            const keyName = `profile-photos/${user._id}.png`;
+        // users = await Promise.all(users.map(async (user) => {
+        //     const keyName = `profile-photos/${user._id}.png`;
 
-            user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
+        //     user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
 
-            return user;
-        }));
+        //     return user;
+        // }));
 
         return new SearchUserResponseDto(total, page, pageSize, users)
     }
 
-    async searchOnlineUsers(): Promise<UserDto[]> {
-        let users = await this.userModel.find({ isOnline: true }).lean().exec();
+    async searchOnlineUsers(currentUserId: string): Promise<UserDto[]> {
+        let users = await this.userModel.find({
+            isOnline: true,
+            _id: { $ne: currentUserId }
+        }).lean().exec();
 
-        users = await Promise.all(users.map(async (user) => {
-            const keyName = `profile-photos/${user._id}.png`;
+        // users = await Promise.all(users.map(async (user) => {
+        //     const keyName = `profile-photos/${user._id}.png`;
 
-            user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
+        //     user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
 
-            return user;
-        }));
+        //     return user;
+        // }));
 
         return users.map(user => new UserDto(user));
     }
@@ -93,7 +96,11 @@ export class UserService {
 
         const keyName = `profile-photos/${user._id}.png`;
 
-        user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
+        // if(!user.profilePhoto) {
+        //     user.profilePhoto = undefined;
+        // } else {
+        //     user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
+        // }
 
         return new UserDto(user);
     }
@@ -140,11 +147,12 @@ export class UserService {
             throw new NotFoundException('User not found');
         }
 
-        const keyName = `profile-photos/${userId}.png`;
+        const keyName = `profile-photos/${userId}`;
 
         await this.s3ConfigService.uploadBase64Image(profilePhotoBase64, keyName);
 
-        user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
+        // user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
+        user.profilePhoto = `https://florty-gravis.s3.eu-central-1.amazonaws.com/${keyName}`;
 
         const res = await user.save();
 

@@ -65,7 +65,7 @@
       chatOutput.value += message + '\n';
     });
 
-    function joinChat() {
+    function joinChat() { 
       const usernameInput = document.getElementById('usernameInput');
       const username = usernameInput.value;
       socket.emit('joinRoom', username, (users) => {

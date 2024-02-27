@@ -10,6 +10,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { WebsocketsModule } from './websockets/websockets.module';
 import { S3ConfigService } from './config/s3.service';
+import { RoomModule } from './modules/room/room.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { S3ConfigService } from './config/s3.service';
     DatabaseModule,
     UserModule,
     AuthModule,
+    RoomModule,
     WebsocketsModule,
   ],
   controllers: [AppController],

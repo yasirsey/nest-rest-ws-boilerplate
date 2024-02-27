@@ -30,7 +30,6 @@ async function bootstrap() {
       },
       'access-token',
     )
-    .addTag('users')
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, swaggerDocument);

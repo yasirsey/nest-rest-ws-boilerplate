@@ -3,7 +3,6 @@ import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
 import { WsJwtGuard } from '../ws.guard';
 import { UserService } from 'src/modules/user/user.service';
-import { SearchUserRequestDto } from 'src/modules/user/dto/requests/search-user.request.dto';
 
 @WebSocketGateway({
     cors: {
@@ -19,24 +18,25 @@ export class ConnectionGateway {
     @UseGuards(WsJwtGuard)
     async handleConnection(client: Socket) {
         if(!client.handshake.auth.user) return;
+
+        console.log('connected', client.handshake.auth.user.id)
         
         await this.userService.setUserOnlineStatus(client.handshake.auth.user.id, true);
 
-        this.notifyOnlineUsersUpdate();
+        client.join(client.handshake.auth.user.id);
+        client.join(`messages-${client.handshake.auth.user.id}`)
     }
 
     @SubscribeMessage('disconnected')
     @UseGuards(WsJwtGuard)
     async handleDisconnect(client: Socket) {
         if(!client.handshake.auth.user) return;
+
+        console.log('disconnected', client.handshake.auth.user.id)
         
         await this.userService.setUserOnlineStatus(client.handshake.auth.user.id, false);
 
-        this.notifyOnlineUsersUpdate();
-    }
-
-    private async notifyOnlineUsersUpdate() {
-        const onlineUsers = await this.userService.searchOnlineUsers();
-        this.server.emit('onlineUsers', onlineUsers);
+        client.leave(client.handshake.auth.user.id);
+        client.leave(`messages-${client.handshake.auth.user.id}`)
     }
 }
