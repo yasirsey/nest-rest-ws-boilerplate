@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room } from 'src/schemas/room.schema';
 import { User } from 'src/schemas/user.schema';
@@ -30,22 +30,22 @@ export class MessageService {
             throw new Error('Room not found');
         }
 
-        const message = await this.messageModel.create({
-            from: sender.id,
-            to: receiver.id,
+        const message = await this.messageModel.findOneAndUpdate({ _id: new Types.ObjectId() }, {
+            from: new Types.ObjectId(sender.id),
+            to: new Types.ObjectId(receiverId),
             content,
-            room: room.id
-        });
+            room: new Types.ObjectId(room.id),
+        }, {
+            new: true,
+            upsert: true,
+            runValidators: true,
+            setDefaultsOnInsert: true,
+        }).populate('room').populate('from').populate('to')
 
         return {
-            message: {
-                id: message._id,
-                fullName: sender.fullName,
-                timestamp: new Date().toISOString(),
-                content: message.content,
-                profilePhoto: sender.profilePhoto,
-                isRead: message.isRead
-            }, room
+            room,
+            message: message.toObject(),
+            member: sender,
         };
     }
 }

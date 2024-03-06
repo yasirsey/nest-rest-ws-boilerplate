@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, HydratedDocument, ObjectId, Types } from 'mongoose';
+import { Document, HydratedDocument, Types } from 'mongoose';
+import { Room } from './room.schema';
+import { User } from './user.schema';
 
 export type MessageDocument = HydratedDocument<Message>;
 
@@ -7,14 +9,14 @@ export type MessageDocument = HydratedDocument<Message>;
   timestamps: true,
 })
 export class Message extends Document {
-  @Prop({ type: Types.ObjectId , ref: 'Room' })
-  room: string;
+  @Prop({ type: Types.ObjectId, required: true, ref: 'Room' })
+  room: Room;
   
   @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
-  to: string;
+  to: User;
 
   @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
-  from: string;
+  from: User;
 
   @Prop({ required: true })
   content: string;

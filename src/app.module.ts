@@ -11,6 +11,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { WebsocketsModule } from './websockets/websockets.module';
 import { S3ConfigService } from './config/s3.service';
 import { RoomModule } from './modules/room/room.module';
+import { MessageModule } from './modules/message/message.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RoomModule } from './modules/room/room.module';
     UserModule,
     AuthModule,
     RoomModule,
+    MessageModule,
     WebsocketsModule,
   ],
   controllers: [AppController],

@@ -52,12 +52,45 @@ export class RoomService {
                         },
                         {
                             $limit: 1
+                        },
+                        {
+                            $project: {
+                                fromMe: {
+                                    $eq: ['$from', new Types.ObjectId(loggedInUserId)]
+                                },
+                                isRead: 1,
+                                content: 1,
+                                createdAt: 1
+                            }
                         }
                     ]
                 }
             },
             {
                 $unwind: '$lastMessage'
+            },
+            {
+                $lookup: {
+                    from: 'messages',
+                    localField: '_id',
+                    foreignField: 'room',
+                    as: 'unreadMessages',
+                    pipeline: [
+                        {
+                            $match: {
+                                from: { $ne: new Types.ObjectId(loggedInUserId) },
+                                isRead: false
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                $addFields: {
+                    unreadMessagesCount: {
+                        $size: '$unreadMessages'
+                    }
+                }
             },
             {
                 $sort: {
@@ -70,6 +103,7 @@ export class RoomService {
                     name: 1,
                     member: 1,
                     lastMessage: 1,
+                    unreadMessagesCount: 1,
                     createdAt: 1
                 }
             },

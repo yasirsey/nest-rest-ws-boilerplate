@@ -51,7 +51,7 @@ export class RoomService {
             return;
         }
 
-        room.members = room.members.filter((userId: string) => ![sender.id, receiver.id].includes(userId));
+        room.members = room.members.filter(member => member.toString() !== sender.id && member.toString() !== receiver.id);
         await room.save();
 
         return room;

@@ -3,6 +3,8 @@ import { Server, Socket } from 'socket.io';
 import { RoomService } from './room.service';
 import { UseGuards } from '@nestjs/common';
 import { WsJwtGuard } from '../ws.guard';
+import { RoomDto } from 'src/schemas/dto/room.dto';
+import { Room } from 'src/schemas/room.schema';
 
 @WebSocketGateway({
     cors: {
@@ -16,7 +18,7 @@ export class RoomGateway {
 
     @SubscribeMessage('joinRoom')
     @UseGuards(WsJwtGuard)
-    async handleJoinRoom(client: Socket, receiverId: string) {
+    async handleJoinRoom(client: Socket, receiverId: string): Promise<any> {
         const sender = client.handshake.auth.user;
 
         const room = await this.roomService.joinUserToRoom(sender, receiverId);
@@ -24,6 +26,8 @@ export class RoomGateway {
         if (room) {
             client.join(room.name);
         }
+
+        return room
     }
 
     @SubscribeMessage('leaveRoom')
