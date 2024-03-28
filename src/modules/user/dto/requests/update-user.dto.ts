@@ -18,10 +18,4 @@ export class UpdateUserRequestDto {
   @IsString()
   @MaxLength(250)
   bio?: string;
-
-  @ApiProperty({ example: 'secretsecret', required: false })
-  @IsOptional()
-  @IsString()
-  @MaxLength(25)
-  password?: string;
 }

@@ -10,6 +10,7 @@ import { User, UserSchema } from 'src/schemas/user.schema';
 import { MessageGateway } from './message/message.gateway';
 import { MessageService } from './message/message.service';
 import { ConnectionGateway } from './connection/connection.gateway';
+import { S3ConfigService } from 'src/config/s3.service';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { ConnectionGateway } from './connection/connection.gateway';
     MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }]),
     MongooseModule.forFeature([{ name: Room.name, schema: RoomSchema }]),
     UserModule],
-  providers: [AppGateway, ConnectionGateway, RoomGateway, RoomService, MessageGateway, MessageService],
+  providers: [AppGateway, ConnectionGateway, RoomGateway, RoomService, MessageGateway, MessageService, S3ConfigService],
 })
 export class WebsocketsModule { }

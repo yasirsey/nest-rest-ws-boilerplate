@@ -26,6 +26,9 @@ export class Message extends Document {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop({ default: String})
+  type: String;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

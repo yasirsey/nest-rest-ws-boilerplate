@@ -39,10 +39,12 @@ export class S3ConfigService {
     if(!keyName) {
       return null;
     }
+
+    return `https://${this.getBucketName()}.s3.${this.configService.get<string>('aws.region')}.amazonaws.com/${keyName}`;
     
-    return await this.s3Client.getSignedUrlPromise('getObject', {
-      Bucket: this.getBucketName(),
-      Key: keyName,
-    });
+    // return await this.s3Client.getSignedUrlPromise('getObject', {
+    //   Bucket: this.getBucketName(),
+    //   Key: keyName,
+    // });
   }
 }

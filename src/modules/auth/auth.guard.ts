@@ -6,31 +6,27 @@ import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService, private userService: UserService, private reflector: Reflector) {}
+  constructor(private jwtService: JwtService, private userService: UserService, private reflector: Reflector) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<any>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
-    
+
     if (isPublic) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
 
-    const token = this.extractTokenFromHeader(request);
-
-    if (!token) {
-      throw new UnauthorizedException();
-    }
-
-    const payload = await this.jwtService.verifyAsync(
-      token
-    );
-
     try {
+      const token = this.extractTokenFromHeader(request);
+
+      const payload = await this.jwtService.verifyAsync(
+        token
+      );
+
       const user = await this.userService.getById(payload.sub);
 
       if (!user) {

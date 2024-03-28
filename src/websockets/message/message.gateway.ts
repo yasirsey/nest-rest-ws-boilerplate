@@ -16,9 +16,9 @@ export class MessageGateway {
 
     @SubscribeMessage('sendMessage')
     @UseGuards(WsJwtGuard)
-    async handleSendMessage(client: Socket, { receiverId, content }: { receiverId: string; content: string }) {
+    async handleSendMessage(client: Socket, { receiverId, content, type }: { receiverId: string; content: string, type: string }) {
         const sender = client.handshake.auth.user;
-        const { room, message, member } = await this.messageService.addMessage(sender, receiverId, content);
+        const { room, message, member } = await this.messageService.addMessage(sender, receiverId, content, type);
 
         if (message) {
             this.server.to(room.name).emit('newMessage', message);

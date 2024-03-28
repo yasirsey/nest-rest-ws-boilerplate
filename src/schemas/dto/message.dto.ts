@@ -34,7 +34,11 @@ export class MessageDto {
 
     @ApiProperty({ example: '2020-10-30T12:00:00.000Z' })
     @IsNotEmpty()
-    updatedAt: Date;    
+    updatedAt: Date;
+
+    @ApiProperty({ example: 'text' })
+    @IsString()
+    type: string;
 
     constructor(message: any) {
         this.id = message._id.toString();
@@ -45,5 +49,6 @@ export class MessageDto {
         this.isRead = message.isRead;
         this.createdAt = message.createdAt;
         this.updatedAt = message.updatedAt;
+        this.type = message.type;
     }
 }

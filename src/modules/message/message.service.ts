@@ -13,7 +13,9 @@ export class MessageService {
         const { page = 1, pageSize = 10 } = searchMyRoomMessagesRequestDto;
 
         const total = await this.messageModel.countDocuments({ room: new Types.ObjectId(roomId) });
-        
+
+        const skipCount = Number(pageSize) * (Number(page) - 1);
+
         const messages = await this.messageModel.aggregate([
             {
                 $match: {
@@ -55,16 +57,17 @@ export class MessageService {
                     from: 1,
                     content: 1,
                     isRead: 1,
-                    createdAt: 1
+                    createdAt: 1,
+                    type: 1,
                 }
             },
             {
-                $skip: (page - 1) * pageSize
+                $skip: skipCount
             },
             {
                 $limit: Number(pageSize)
             },
-        ])
+        ]);
 
         return new SearchMyRoomMessagesResponseDto(total, page, pageSize, messages);
     }

@@ -116,7 +116,7 @@ export class UserService {
             throw new NotFoundException('User not found');
         }
 
-        const { fullName, email, bio, password } = updateUserDto;
+        const { fullName, email, bio } = updateUserDto;
 
         if (fullName) {
             user.fullName = fullName;
@@ -129,10 +129,6 @@ export class UserService {
 
         if (bio) {
             user.bio = bio;
-        }
-
-        if (password) {
-            user.password = password;
         }
 
         const res = await user.save();
@@ -151,8 +147,7 @@ export class UserService {
 
         await this.s3ConfigService.uploadBase64Image(profilePhotoBase64, keyName);
 
-        // user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
-        user.profilePhoto = `https://florty-gravis.s3.eu-central-1.amazonaws.com/${keyName}`;
+        user.profilePhoto = await this.s3ConfigService.getSignedUrl(keyName);
 
         const res = await user.save();
 

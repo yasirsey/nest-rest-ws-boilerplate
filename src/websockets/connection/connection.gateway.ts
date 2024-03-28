@@ -14,7 +14,7 @@ export class ConnectionGateway {
 
     constructor(private readonly userService: UserService) { }
 
-    @SubscribeMessage('connected')
+    @SubscribeMessage('online')
     @UseGuards(WsJwtGuard)
     async handleConnection(client: Socket) {
         if(!client.handshake.auth.user) return;
@@ -25,7 +25,7 @@ export class ConnectionGateway {
         client.join(`messages-${client.handshake.auth.user.id}`)
     }
 
-    @SubscribeMessage('disconnected')
+    @SubscribeMessage('offline')
     @UseGuards(WsJwtGuard)
     async handleDisconnect(client: Socket) {
         if(!client.handshake.auth.user) return;

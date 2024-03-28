@@ -14,7 +14,6 @@ import { RegisterResponseDto } from './dto/responses/register.response.dto';
 import { Public } from 'src/decorators/public.decorator';
 import { UpdateUserRequestDto } from './dto/requests/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateProfilePhotoDto } from './dto/requests/update-profile-photo.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -52,13 +51,12 @@ export class UserController {
         return await this.userService.updateById(req.user.id, updateUserDto);
     }
 
-    @Patch('me/profile-photo')
+    @Patch('me/profile-picture')
     @ApiBearerAuth('access-token')
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('file'))
     async updateMyProfilePhoto(
         @Request() req,
-        @Body(new ValidationPipe()) updateProfilePhotoDto: UpdateProfilePhotoDto,
         @UploadedFile() file,
     ): Promise<UserDto> {
         const userId = req.user.id;

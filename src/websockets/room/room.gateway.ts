@@ -3,8 +3,6 @@ import { Server, Socket } from 'socket.io';
 import { RoomService } from './room.service';
 import { UseGuards } from '@nestjs/common';
 import { WsJwtGuard } from '../ws.guard';
-import { RoomDto } from 'src/schemas/dto/room.dto';
-import { Room } from 'src/schemas/room.schema';
 
 @WebSocketGateway({
     cors: {
